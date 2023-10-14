@@ -1,6 +1,7 @@
 package mips_emulator.model;
 
 public enum Register {
+    R0,
     R1,
     R2,
     R3,
@@ -31,6 +32,5 @@ public enum Register {
     R28,
     R29,
     R30,
-    R31,
-    R32;
+    R31;
 }

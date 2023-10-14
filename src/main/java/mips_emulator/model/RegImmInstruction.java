@@ -17,4 +17,9 @@ public class RegImmInstruction extends Instruction {
                 "%s %s, %d(%s)".formatted(opCode, rd, immediate, rs1) :
                 "%s %s, %s, %d".formatted(opCode, rd, rs1, immediate);
     }
+
+    @Override
+    public boolean hasImmediateOperand() {
+        return true;
+    }
 }

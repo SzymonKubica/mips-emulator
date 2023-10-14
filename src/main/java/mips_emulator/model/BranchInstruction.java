@@ -17,4 +17,9 @@ public class BranchInstruction extends Instruction {
         this.rs2 = rs2;
         this.immediate = immediate;
     }
+
+    @Override
+    public boolean hasImmediateOperand() {
+        return true;
+    }
 }

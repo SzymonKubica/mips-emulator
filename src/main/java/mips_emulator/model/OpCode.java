@@ -2,6 +2,7 @@ package mips_emulator.model;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 public enum OpCode {
     // Arithmetic and Logical Instructions
@@ -75,5 +76,33 @@ public enum OpCode {
 
     public static Optional<OpCode> fromValue(short value) {
         return Arrays.stream(values()).findAny().filter(opCode -> opCode.value == value);
+    }
+
+    public boolean isLoadStore() {
+        return isStore() || isLoad();
+    }
+
+    public boolean isStore() {
+        return Set.of(SB, SH, SW).contains(this);
+    }
+
+    public boolean isLoad() {
+        return Set.of(LB, LBU, LH, LHU, LW).contains(this);
+    }
+
+    public boolean isBranch() {
+        return Set.of(BEQ, BGTZ, BLEZ, BNE).contains(this);
+    }
+
+    public InstructionType getInstructionType() {
+        if (isLoad()) {
+            return InstructionType.LOAD;
+        } else if (isStore()) {
+            return InstructionType.STORE;
+        } else if (isBranch()) {
+            return InstructionType.BRANCH;
+        } else {
+            return InstructionType.OTHER;
+        }
     }
 }

@@ -14,7 +14,7 @@ public class Assembler {
         return Arrays.stream(assembly.split("\n")).map(Assembler::assembleLine).toList();
     }
 
-    private static Instruction assembleLine(String s) {
+    public static Instruction assembleLine(String s) {
         List<String> parts = Arrays.stream(s.split("[ ,)(]")).filter(str -> !str.equals("")).toList();
         OpCode opCode = OpCode.valueOf(parts.get(0).toUpperCase());
         List<String> operands = parts.subList(1, parts.size());
@@ -30,7 +30,7 @@ public class Assembler {
     }
 
     private static Instruction extractRegImmInstruction(OpCode opCode, List<String> operands) {
-        return Set.of(LB, LBU, LH, LHU, LW, SB, SH, SW).contains(opCode) ?
+        return opCode.isLoadStore() ?
                 extractLoadStoreInstruction(opCode, operands) :
                 extractRegularRegImmInstruction(opCode, operands);
     }
@@ -46,10 +46,10 @@ public class Assembler {
     // The brackets are removed during parsing, and we are left with the operands in the following order:
     // [R1, 100, R2]
     private static Instruction extractLoadStoreInstruction(OpCode opCode, List<String> operands) {
-        Register rs1 = Register.valueOf(operands.get(0).toUpperCase());
+        Register rd = Register.valueOf(operands.get(0).toUpperCase());
         int immediate = Integer.parseInt(operands.get(1));
-        Register rs2 = Register.valueOf(operands.get(2).toUpperCase());
-        return new RegImmInstruction(opCode, rs1, rs2, immediate);
+        Register rs1 = Register.valueOf(operands.get(2).toUpperCase());
+        return new RegImmInstruction(opCode, rd, rs1, immediate);
     }
 
     private static Instruction extractBranchInstruction(OpCode opCode, List<String> operands) {
@@ -64,6 +64,10 @@ public class Assembler {
     }
 
     private static Instruction extractRegRegInstruction(OpCode opCode, List<String> operands) {
-        return null;
+        Register destination = Register.valueOf(operands.get(0).toUpperCase());
+        Register rs1 = Register.valueOf(operands.get(1).toUpperCase());
+        Register rs2 = Register.valueOf(operands.get(2).toUpperCase());
+        int opx = operands.size() == 4 ? Integer.parseInt(operands.get(3)) : 0;
+        return new RegRegInstruction(opCode, rs1, rs2, destination, opx);
     }
 }

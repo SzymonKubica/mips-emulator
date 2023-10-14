@@ -1,5 +1,8 @@
 package mips_emulator.model;
 
+import lombok.ToString;
+
+@ToString
 public class RegRegInstruction extends Instruction {
 
     public final Register rs1;
@@ -13,5 +16,10 @@ public class RegRegInstruction extends Instruction {
         this.rs2 = rs2;
         this.destination = destination;
         this.opx = opx;
+    }
+
+    @Override
+    public String toString() {
+       return "%s %s, %s, %s".formatted(opCode, destination, rs1, rs2);
     }
 }

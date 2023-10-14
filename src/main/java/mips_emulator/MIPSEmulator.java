@@ -11,6 +11,7 @@ public class MIPSEmulator {
                 SW R5, 100(R6)
                 ADDI R4, R5, 50
                 """);
+        System.out.println(instructions.stream().map(Instruction::toString).reduce("", (a, b) -> a + b + "\n"));
         Emulator emulator = new Emulator(instructions);
         emulator.run();
     }

@@ -10,4 +10,8 @@ public class Multiplexer {
         return controlSignal ? value1 : value2;
     }
 
+    public void resetSignal() {
+        controlSignal = false;
+    }
+
 }

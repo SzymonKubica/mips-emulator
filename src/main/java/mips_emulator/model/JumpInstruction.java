@@ -3,8 +3,8 @@ package mips_emulator.model;
 
 
 public class JumpInstruction extends Instruction {
-    public final int target;
-    public JumpInstruction(OpCode opCode, int target) {
+    public final String target;
+    public JumpInstruction(OpCode opCode, String target) {
         super(opCode);
         this.target = target;
     }

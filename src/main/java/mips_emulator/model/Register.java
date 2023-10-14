@@ -33,4 +33,24 @@ public enum Register {
     R29,
     R30,
     R31;
+
+    public static Register parseFrom(String str) {
+        switch (str.toLowerCase()) {
+            case "$zero": return R0;
+            case "$gp": return R28;
+            case "$sp": return R29;
+            case "$fp": return R30;
+            case "$ra": return R31;
+        }
+        try {
+            return Register.valueOf(str);
+        } catch (IllegalArgumentException e) {
+            // The register might be in the form $1, $2, $zero
+            if (str.startsWith("$")) {
+                return Register.valueOf("R" + str.substring(1));
+            } else {
+                throw new IllegalArgumentException("Invalid register name: %s".formatted(str));
+            }
+        }
+    }
 }

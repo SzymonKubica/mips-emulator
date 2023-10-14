@@ -45,7 +45,7 @@ public class Emulator {
         log.info("Starting execution");
         log.info("Initial program state: %s".formatted(toString()));
         // Figure out the proper condition to detect termination
-        while (clockCycle < instructions.size()) {
+        while (clockCycle < instructions.size() + 10) {
             clockCycle++;
             aluLeftMUX.resetSignal();
             aluRightMUX.resetSignal();
@@ -66,7 +66,7 @@ public class Emulator {
             Register destinationRegister = null;
 
             if (instruction instanceof JumpInstruction jumpInstruction) {
-                switch(instruction.opCode) {
+                switch (instruction.opCode) {
                     case J:
                         pc += (Integer.parseInt(jumpInstruction.target) << 2);
                         log.info(toString());
@@ -99,13 +99,8 @@ public class Emulator {
             }
 
             // Stage 3: Execute
-            if (instruction.opCode.isBranch()) {
-                aluLeftMUX.setControlSignal(true);
-            }
-
-            if (instruction.hasImmediateOperand()) {
-                aluRightMUX.setControlSignal(true);
-            }
+            aluLeftMUX.setControlSignal(instruction.opCode.isBranch());
+            aluRightMUX.setControlSignal(instruction.hasImmediateOperand());
 
             int aluLeftInput = aluLeftMUX.selectValue(pc, rs1);
             int aluRightInput = aluRightMUX.selectValue(signExtendedImmediate, rs2);
@@ -118,11 +113,8 @@ public class Emulator {
             // Stage 4: Memory Access
             switch (instruction.opCode.getInstructionType()) {
                 case BRANCH -> {
-                    if (rs1 == 0) {
-                        pc = pc + signExtendedImmediate * INSTRUCTION_SIZE;
-                        log.info(toString());
-                        continue;
-                    }
+                    memoryAccessMultiplexer.setControlSignal(rs1 - rs2 == 0);
+                    pc = memoryAccessMultiplexer.selectValue(aluResult, pc);
                 }
                 case STORE -> {
                     log.info("%s".formatted(rs1));
@@ -135,11 +127,12 @@ public class Emulator {
                     log.info("%s".formatted(aluResult));
                     lmd = dataMemory.loadFrom(aluResult);
                 }
-                case OTHER -> {}
+                case OTHER -> {
+                }
             }
 
             // Stage 5: Write Back
-            if(instruction.opCode.isLoad()) {
+            if (instruction.opCode.isLoad()) {
                 writeBackMultiplexer.setControlSignal(true);
             }
 

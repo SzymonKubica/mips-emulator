@@ -36,8 +36,9 @@ public class MIPSEmulator {
                 	lw	$fp, 16($sp)                    
                 	lw	$ra, 20($sp)                    
                 	addiu	$sp, $sp, 24
+                	addiu $2, $zero, 124
+                	beq $2, $1, -4
                 	jr	$ra
-                                
                 """);
         Emulator emulator = new Emulator(instructions2);
         emulator.run();

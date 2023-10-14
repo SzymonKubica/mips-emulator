@@ -6,6 +6,7 @@ public class ArithmeticLogicUnit {
     public int performOperation(OpCode opCode, int aluLeftInput, int aluRightInput) {
         return switch (opCode) {
             case ADD, ADDU, ADDI, ADDIU -> aluLeftInput + aluRightInput;
+            case BEQ, BNE -> aluLeftInput + (aluRightInput * 4);
             case AND, ANDI -> aluLeftInput & aluRightInput;
             case DIV, DIVU -> aluLeftInput / aluRightInput;
             case MULT, MULTU -> aluLeftInput * aluRightInput;
